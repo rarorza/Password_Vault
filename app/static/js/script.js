@@ -1,81 +1,101 @@
-// Função para copiar a senha para a área de transferência
-function copyPassword() {
-  const passwordInput = document.getElementById("password");
-  passwordInput.select();
-  document.execCommand("copy");
-}
+document.addEventListener('DOMContentLoaded', function() {
+  const passwordList = document.getElementById('password-list');
+  const detailsPassword = document.getElementById('details');
+  const inputName = document.getElementById('input-name');
+  const inputUsername = document.getElementById('input-username');
+  const inputUrl = document.getElementById('input-url');
+  const inputPassword = document.getElementById('input-password');
+  const btnAdd = document.getElementById('btn-add');
+  const btnRemove = document.getElementById('btn-remove');
 
-// Função para gerar uma nova senha
-function generatePassword() {
-  // Obter os valores dos parâmetros
-  const length = document.getElementById("length").value;
-  const numbers = document.getElementById("numbers").value;
-  const specialChars = document.getElementById("specialChars").value;
+  // Array para armazenar as senhas
+  const passwords = [
+    { name: 'Senha 1', username: 'usuario1', url: 'http://example.com', password: 'senha123' },
+  ];
 
-  // Fazer uma requisição ao backend para gerar a senha
-  // Substitua "URL_DO_BACKEND" pela URL real do seu backend
-  fetch("URL_DO_BACKEND", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ length, numbers, specialChars }),
-  })
-    .then(response => response.json())
-    .then(data => {
-      const passwordInput = document.getElementById("password");
-      passwordInput.value = data.password;
-    })
-    .catch(error => {
-      console.error("Erro ao gerar a senha:", error);
-    });
-}
+  // Função para atualizar o valor exibido ao lado dos sliders
+  function updateSliderValue(sliderId, spanId) {
+    const slider = document.getElementById(sliderId);
+    const span = document.getElementById(spanId);
+    span.textContent = slider.value;
+  }
 
-// Função para salvar os dados do usuário e adicionar à lista
-function saveData() {
-  // Obter os valores dos campos de entrada
-  const name = document.getElementById("name").value;
-  const username = document.getElementById("username").value;
-  const url = document.getElementById("url").value;
-  const category = document.getElementById("category").value;
+  // Atualizar o valor exibido ao carregar a página
+  updateSliderValue('slider-length', 'current-length');
+  updateSliderValue('slider-character', 'current-character');
+  updateSliderValue('slider-nums', 'current-nums');
 
-  // Criar um novo item de lista
-  const listItem = document.createElement("li");
-  listItem.innerHTML = `
-    <strong>Name:</strong> ${name}<br>
-    <strong>Username:</strong> ${username}<br>
-    <strong>URL:</strong> ${url}<br>
-    <strong>Category:</strong> ${category}<br>
-    <strong>Password:</strong> <br></br>
-    `;
-
-
-  // Criar os botões de editar e excluir
-  const editButton = document.createElement("button");
-  editButton.textContent = "Edit";
-  editButton.addEventListener("click", () => {
-    // Lógica para editar o item da lista
-    console.log("Editar item:", listItem.textContent);
+  // Event listener para atualizar o valor ao mover os sliders
+  document.getElementById('slider-length').addEventListener('input', function() {
+    updateSliderValue('slider-length', 'current-length');
   });
 
-  const deleteButton = document.createElement("button");
-  deleteButton.textContent = "Delete";
-  deleteButton.addEventListener("click", () => {
-    // Lógica para excluir o item da lista
-    listItem.remove();
+  document.getElementById('slider-character').addEventListener('input', function() {
+    updateSliderValue('slider-character', 'current-character');
   });
 
-  // Adicionar os botões ao item da lista
-  listItem.appendChild(editButton);
-  listItem.appendChild(deleteButton);
+  document.getElementById('slider-nums').addEventListener('input', function() {
+    updateSliderValue('slider-nums', 'current-nums');
+  });
 
-  // Adicionar o novo item à lista de senhas
-  const passwordList = document.getElementById("passwordList");
-  passwordList.appendChild(listItem);
-}
+  // Função para exibir os detalhes de uma senha
+  function showDetails(index) {
+    const password = passwords[index];
+    inputName.value = password.name;
+    inputUsername.value = password.username;
+    inputUrl.value = password.url;
+    inputPassword.value = password.password;
+    detailsPassword.style.display = 'block';
+  }
 
-// Adicionar os manipuladores de eventos aos botões
-document.getElementById("copyButton").addEventListener("click", copyPassword);
-document.getElementById("generatePassword").addEventListener("click", generatePassword);
-document.getElementById("save").addEventListener("click", saveData);
+  // Event listener para mostrar detalhes ao clicar em uma senha da lista
+  passwordList.addEventListener('click', function(event) {
+    const target = event.target;
+    if (target.tagName === 'LI') {
+      const index = Array.from(passwordList.children).indexOf(target);
+      if (index >= 0) {
+        showDetails(index);
+        // Remover a classe 'active' dos outros itens e adicionar ao item clicado
+        Array.from(passwordList.children).forEach((item, i) => {
+          if (i === index) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+      }
+    }
+  });
 
+  // Função para adicionar uma nova senha à lista
+  function addPassword() {
+    const newPassword = { nome: 'Nova Senha', username: 'novousuario', url: 'http://example.com', password: 'novasenha123' };
+    passwords.push(newPassword);
+    // Atualizar a lista de senhas
+    const newLi = document.createElement('li');
+    newLi.classList.add('list-group-item');
+    newLi.textContent = newPassword.nome;
+    passwordList.appendChild(newLi);
+  }
+
+  // Event listener para adicionar nova senha ao clicar no botão "Adicionar"
+  btnAdd.addEventListener('click', function() {
+    addPassword();
+  });
+
+  // Função para remover a senha selecionada
+  function removerSenhaSelecionada() {
+    const selectedLi = passwordList.querySelector('.list-group-item.active');
+    if (selectedLi) {
+      const index = Array.from(passwordList.children).indexOf(selectedLi);
+      passwords.splice(index, 1); // Remover a senha do array
+      passwordList.removeChild(selectedLi); // Remover o elemento da lista
+      detailsPassword.style.display = 'none'; // Ocultar os detalhes da senha
+    }
+  }
+
+  // Event listener para remover a senha selecionada ao clicar no botão "Remover Senha"
+  btnRemove.addEventListener('click', function() {
+    removerSenhaSelecionada();
+  });
+});

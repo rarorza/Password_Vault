@@ -2,15 +2,46 @@
 {% block body %}
 <main>
   <div class="container">
-    <h1>Password Vault</h1>
     <div class="row">
-      <div class="col">
-        <form action="" method="post">
-          <h1>teste</h1>
-        </form>   
+      <div class="col-md-4">
+        <h2>Passwords</h2>
+        <ul class="list-group" id="password-list">
+          <li class="list-group-item">Password 1</li>
+        </ul>
+        <button class="btn btn-primary mt-3" id="btn-add">+</button>
+      </div>
+
+      <div class="col-md-8" id="details">
+        <h2>Detalhes da Senha</h2>
+        <p><strong>Name:</strong> <input type="text" id="input-name"></p>
+        <p><strong>Username:</strong> <input type="text" id="input-username"></p>
+        <p><strong>URL:</strong> <input type="text" id="input-url"></p>
+        <p><strong>Password:</strong> <input type="text" id="input-password"></p>
+        <p><strong>Category:</strong> <input type="text" id="input-category"></p>
+
+        <!-- Sliders -->
+        <p>
+          <strong>Password length:</strong>
+          <input type="range" min="8" max="30" value="12" id="slider-length">
+          <span id="current-length">12</span>
+        </p>
+        <p>
+          <strong>Special Characters:</strong>
+          <input type="range" min="0" max="10" value="2" id="slider-character">
+          <span id="current-character">2</span>
+        </p>
+        <p>
+          <strong>Numbers:</strong>
+          <input type="range" min="0" max="10" value="2" id="slider-nums">
+          <span id="current-nums">2</span>
+        </p>
+
+        <!-- Buttons -->
+        <button class="btn btn-primary" id="btn-save">Save</button>
+        <button class="btn btn-danger" id="btn-remove">Delete</button>
+        <button class="btn btn-primary" id="btn-new-password">Generate new password</button>
       </div>
     </div>
-
   </div>
 </main>
 {% endblock %}
