@@ -33,13 +33,13 @@ def login():
                 f"Account created successfully, email: {form_signup.email.data}",
                 "alert-success",
             )
-            return redirect(url_for("home"))
 
     if form_signin.validate_on_submit() and "submit_signin" in request.form:
         flash(
             f"Login successful, email: {form_signin.email.data}",
             "alert-success",
         )
+        return redirect(url_for("home"))
 
     return render_template(
         "login.html", form_signup=form_signup, form_signin=form_signin
