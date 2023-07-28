@@ -1,4 +1,4 @@
-from Password import Password
+from password import Password
 
 
 def main():
