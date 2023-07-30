@@ -2,11 +2,12 @@ from app import app, db, login_manager
 from flask import render_template, url_for, request, flash, redirect
 from app.models.forms import FormSignUp, FormSignIn
 from app.models.tables import User
+from flask_login import current_user, login_required, login_user, logout_user
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get(user_id)
+    return User.query.get(user_id)
 
 
 @app.route("/")
@@ -35,12 +36,28 @@ def login():
             )
 
     if form_signin.validate_on_submit() and "submit_signin" in request.form:
-        flash(
-            f"Login successful, email: {form_signin.email.data}",
-            "alert-success",
-        )
-        return redirect(url_for("home"))
+        user_db = User.query.filter_by(email=form_signin.email.data).first()
+        if user_db and user_db.verify_password(form_signin.pwd.data):
+            login_user(user_db, remember=form_signin.remember.data)
+            flash(
+                f"Login successful, email: {form_signin.email.data}",
+                "alert-success",
+            )
+            param_next = request.args.get("next")
+            if param_next:
+                return redirect(param_next)
+            else:
+                return redirect(url_for("home"))
+        else:
+            flash("Login failed, incorrect email or password", "alert-danger")
 
     return render_template(
         "login.html", form_signup=form_signup, form_signin=form_signin
     )
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("home"))

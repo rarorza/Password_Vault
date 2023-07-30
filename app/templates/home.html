@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
 <main>
+  {% if current_user.is_authenticated %}
   <div class="container">
     <div class="row">
       <div class="col-md-4">
@@ -45,5 +46,10 @@
       </div>
     </div>
   </div>
+  {% else %}
+  <div class="container">
+    <h1>Please login to test</h1>
+  </div>
+  {% endif%}
 </main>
 {% endblock %}
