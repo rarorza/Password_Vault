@@ -1,2 +1,7 @@
-SECRET_KEY = "7e8e65ed8be9df757c92ba26e5fe70b9e648a3792766335752ccca45034a8144"
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 SQLALCHEMY_DATABASE_URI = "sqlite:///storage.db"
