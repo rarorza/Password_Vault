@@ -1,6 +1,11 @@
 from app import app, db, login_manager
 from flask import render_template, url_for, request, flash, redirect
-from app.models.forms import FormSignUp, FormSignIn, FormCreatePassword, FormDetailsPassword
+from app.models.forms import (
+    FormSignUp,
+    FormSignIn,
+    FormCreatePassword,
+    FormDetailsPassword,
+)
 from app.models.tables import User, Password
 from flask_login import current_user, login_required, login_user, logout_user
 
@@ -22,36 +27,59 @@ def home():
             flash("Password create successfully", "alert-success")
     else:
         list_password = None
-    return render_template("home.html", form_create=form_create, list_password=list_password)
+    return render_template(
+        "home.html", form_create=form_create, list_password=list_password
+    )
 
 
 @app.route("/<password_id>", methods=["GET", "POST"])
+@login_required
 def details_pwd(password_id):
     password = Password.query.get(password_id)
-    print("----", password.name, password.url)
     list_password = Password.query.filter_by(id_owner=current_user.id)
     if current_user == password.owner:
         form_create = FormCreatePassword()
         form_details = FormDetailsPassword()
-        if request.method == "GET":
-            form_details.name.data = password.name
-            form_details.username.data = password.username
-            form_details.pwd.data = password.pwd
-            form_details.url.data = password.url
-            form_details.category.data = password.category
-        if form_details.validate_on_submit() and "submit_save" in request.form:
+        if "submit_save" in request.form:
             password.name = form_details.name.data
             password.username = form_details.username.data
             password.url = form_details.url.data
             password.category = form_details.category.data
             password.pwd = form_details.pwd.data
             db.session.commit()
-            flash("Modificação salva com sucesso", "alert-success")
+            flash("Modification successfully saved", "alert-success")
+        if "submit_gen_pwd" in request.form:
+            if (
+                form_details.len_pwd.data
+                and form_details.num_pwd.data
+                and form_details.spe_pwd.data
+            ):
+                form_details.pwd.data = password.gen_pwd(
+                    form_details.len_pwd.data,
+                    form_details.num_pwd.data,
+                    form_details.spe_pwd.data,
+                )
+        if request.method == "GET":
+            form_details.name.data = password.name
+            form_details.username.data = password.username
+            form_details.pwd.data = password.pwd
+            form_details.url.data = password.url
+            form_details.category.data = password.category
         if form_create.validate_on_submit() and "create" in request.form:
             pwd = Password(name=form_create.name.data, id_owner=current_user.id)
             db.session.add(pwd)
             db.session.commit()
-    return render_template("details_pwd.html", password=password, form_details=form_details, form_create=form_create, list_password=list_password)
+    else:
+        form_create = None
+        form_details = None
+        return redirect(url_for("home"))
+    return render_template(
+        "details_pwd.html",
+        password=password,
+        form_details=form_details,
+        form_create=form_create,
+        list_password=list_password,
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])

@@ -1,6 +1,6 @@
 {% extends 'home.html' %} {% block details %}
 <div class="col col-9">
-  <form action="" method="post">
+  <form action="" method="POST">
     {{ form_details.csrf_token }}
     <legend>Details</legend>
     <fieldset>
@@ -37,6 +37,8 @@
       </div>
     </fieldset>
     {{ form_details.submit_save(class="btn btn-primary mt-2") }}
+    {{ form_details.submit_gen_pwd(class="btn btn-primary mt-2") }}
   </form>
+  <form action="" method="POST"></form>
 </div>
 {% endblock %}

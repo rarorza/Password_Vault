@@ -1,5 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField
+from wtforms import (
+    StringField,
+    PasswordField,
+    SubmitField,
+    BooleanField,
+    IntegerField,
+)
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 
@@ -19,6 +25,11 @@ class FormSignIn(FlaskForm):
     submit_signin = SubmitField("SignIn")
 
 
+class FormCreatePassword(FlaskForm):
+    name = StringField("Name", validators=[DataRequired()])
+    create = SubmitField("Create")
+
+
 class FormDetailsPassword(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     username = StringField("Username")
@@ -29,8 +40,4 @@ class FormDetailsPassword(FlaskForm):
     num_pwd = IntegerField("Numbers")
     spe_pwd = IntegerField("Special")
     submit_save = SubmitField("Save")
-
-
-class FormCreatePassword(FlaskForm):
-    name = StringField("Name", validators=[DataRequired()])
-    create = SubmitField("Create")
+    submit_gen_pwd = SubmitField("Generate")
