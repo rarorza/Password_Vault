@@ -1,0 +1,42 @@
+{% extends 'home.html' %} {% block details %}
+<div class="col col-9">
+  <form action="" method="post">
+    {{ form_details.csrf_token }}
+    <legend>Details</legend>
+    <fieldset>
+      <div class="form-group">
+        {{form_details.name.label(class="form-control-label")}} {% if
+        form_details.name.errors %} {{ form_details.name(class="form-control
+        is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form_details.name.errors %} {{error}} {% endfor %}
+        </div>
+        {% else %} {{ form_details.name(class="form-control") }} {% endif %}
+      </div>
+      <div class="form-group">
+        {{form_details.username.label(class="form-control-label")}} {{
+        form_details.username(class="form-control") }}
+      </div>
+      <div class="form-group">
+        {{form_details.url.label(class="form-control-label")}} {{
+        form_details.url(class="form-control") }}
+      </div>
+      <div class="form-group">
+        {{form_details.category.label(class="form-control-label")}} {{
+        form_details.category(class="form-control") }}
+      </div>
+      <div class="form-group my-3" style="display: flex; align-items: center">
+        {{form_details.pwd.label(class="form-control-label pe-2")}} {{
+        form_details.pwd(class="form-control") }}
+        {{form_details.len_pwd.label(class="form-control-label px-2")}} {{
+        form_details.len_pwd(class="form-control") }}
+        {{form_details.num_pwd.label(class="form-control-label px-2")}} {{
+        form_details.num_pwd(class="form-control") }}
+        {{form_details.spe_pwd.label(class="form-control-label px-2")}} {{
+        form_details.spe_pwd(class="form-control") }}
+      </div>
+    </fieldset>
+    {{ form_details.submit_save(class="btn btn-primary mt-2") }}
+  </form>
+</div>
+{% endblock %}

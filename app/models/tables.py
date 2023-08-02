@@ -31,17 +31,10 @@ class Password(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(86), nullable=False)
     username = db.Column(db.String(86))
-    pwd = db.Column(db.String(120), nullable=False)
+    pwd = db.Column(db.String(120))
     url = db.Column(db.String(120))
     category = db.Column(db.String(20), default="No category")
     id_owner = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-
-    def __init__(self, name):
-        self.name = name
-        self.username = str
-        self.pwd = str
-        self.url = str
-        self.category = str
 
     def gen_pwd(self, length_pwd, min_numbers, min_special):
         """Generate password"""

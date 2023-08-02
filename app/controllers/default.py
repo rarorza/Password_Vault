@@ -1,7 +1,7 @@
 from app import app, db, login_manager
 from flask import render_template, url_for, request, flash, redirect
-from app.models.forms import FormSignUp, FormSignIn
-from app.models.tables import User
+from app.models.forms import FormSignUp, FormSignIn, FormCreatePassword, FormDetailsPassword
+from app.models.tables import User, Password
 from flask_login import current_user, login_required, login_user, logout_user
 
 
@@ -10,9 +10,48 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def home():
-    return render_template("home.html")
+    form_create = FormCreatePassword()
+    if current_user.is_authenticated:
+        list_password = Password.query.filter_by(id_owner=current_user.id)
+        if form_create.validate_on_submit():
+            pwd = Password(name=form_create.name.data, id_owner=current_user.id)
+            db.session.add(pwd)
+            db.session.commit()
+            flash("Password create successfully", "alert-success")
+    else:
+        list_password = None
+    return render_template("home.html", form_create=form_create, list_password=list_password)
+
+
+@app.route("/<password_id>", methods=["GET", "POST"])
+def details_pwd(password_id):
+    password = Password.query.get(password_id)
+    print("----", password.name, password.url)
+    list_password = Password.query.filter_by(id_owner=current_user.id)
+    if current_user == password.owner:
+        form_create = FormCreatePassword()
+        form_details = FormDetailsPassword()
+        if request.method == "GET":
+            form_details.name.data = password.name
+            form_details.username.data = password.username
+            form_details.pwd.data = password.pwd
+            form_details.url.data = password.url
+            form_details.category.data = password.category
+        if form_details.validate_on_submit() and "submit_save" in request.form:
+            password.name = form_details.name.data
+            password.username = form_details.username.data
+            password.url = form_details.url.data
+            password.category = form_details.category.data
+            password.pwd = form_details.pwd.data
+            db.session.commit()
+            flash("Modificação salva com sucesso", "alert-success")
+        if form_create.validate_on_submit() and "create" in request.form:
+            pwd = Password(name=form_create.name.data, id_owner=current_user.id)
+            db.session.add(pwd)
+            db.session.commit()
+    return render_template("details_pwd.html", password=password, form_details=form_details, form_create=form_create, list_password=list_password)
 
 
 @app.route("/login", methods=["GET", "POST"])
