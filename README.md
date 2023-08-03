@@ -1,8 +1,11 @@
 # password_vault
+<h1 align="center"> Password Vault </h1>
 
-Study application, made using Flask and Boostrap.
+<p align="center">
+Password Vault is a web application for storing passwords. <br/>
+</p>
 
-Password Vault is a web application for storing passwords.
+Study application, made using Flask.
 
 1 - To run the application, clone the repository and install the dependencies with a virtual environment of your choice.
 
