@@ -1,4 +1,3 @@
-# password_vault
 <h1 align="center"> Password Vault </h1>
 
 <p align="center">
