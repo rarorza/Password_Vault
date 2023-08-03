@@ -59,6 +59,16 @@ def details_pwd(password_id):
                     form_details.num_pwd.data,
                     form_details.spe_pwd.data,
                 )
+            else:
+                flash(
+                    "Enter password length, number of numbers and special characters",
+                    "alert-danger",
+                )
+        if "submit_delete" in request.form:
+            db.session.delete(password)
+            db.session.commit()
+            flash("Password deleted successfully", "alert-danger")
+            return redirect(url_for("home"))
         if request.method == "GET":
             form_details.name.data = password.name
             form_details.username.data = password.username

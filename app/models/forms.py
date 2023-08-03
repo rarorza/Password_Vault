@@ -40,4 +40,5 @@ class FormDetailsPassword(FlaskForm):
     num_pwd = IntegerField("Numbers")
     spe_pwd = IntegerField("Special")
     submit_save = SubmitField("Save")
-    submit_gen_pwd = SubmitField("Generate")
+    submit_gen_pwd = SubmitField("Generate Password")
+    submit_delete = SubmitField("Delete")
