@@ -14,7 +14,7 @@ Study application, made using Flask.
 
 3 - Run:
 
-`` $ python run` or `$ flask --app app run ``
+`$ python run.py` or `$ flask --app app run `
 
 <p align="center">
   <img alt="Project screenshot 1" src="./.github/screen_0.gif" width="100%">
